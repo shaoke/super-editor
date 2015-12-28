@@ -1,0 +1,19 @@
+{
+  "name": "Super Editor",
+  "description": "A powerful markdown editor for Frond-End Developer. Use markdown syntax, and you can sync up with evernote",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "icons": {
+    "16": "icon_16.png",
+    "128": "icon_128.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "offline_enabled": true,
+  "permissions": [
+    "storage"
+  ]
+}

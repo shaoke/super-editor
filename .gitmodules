@@ -1,0 +1,3 @@
+[submodule "vendor-src/stackedit"]
+	path = vendor-src/stackedit
+	url = https://github.com/benweet/stackedit.git
