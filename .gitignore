@@ -35,3 +35,6 @@ node_modules
 
 # stackedit library
 vendor-src/stackedit
+
+# generate folder
+dist
