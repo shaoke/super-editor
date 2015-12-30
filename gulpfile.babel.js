@@ -15,6 +15,7 @@ const $ = gulpLoadPlugins();
 const CONFIG = {
     stackEditTag: "v4.3.11",
     stackEditSrc: "vendor-src/stackedit",
+    stackEditCustomSrc: "stackedit-custom-src",
     dist: "dist",
     chromeAppSrc: "chrome-app",
     appName: "superedit",
@@ -54,11 +55,20 @@ gulp.task('stackedit:bower:install', ()=>{
     cp.execSync('bower install', {cwd: CONFIG.stackEditSrc});
 });
 
+gulp.task('stackedit:custom', ()=>{
+    gulp.src(["**/*"], {cwd:CONFIG.stackEditCustomSrc})
+        .pipe(gulp.dest(CONFIG.stackEditSrc, {overwrite:true}));
+});
+
 //-------------------------------------------
 // Build/minify
 gulp.task('stackedit:build', ()=>{
     cp.execSync('gulp', {cwd: CONFIG.stackEditSrc});
 });
+
+//-------------------------------------------
+// stackedit
+gulp.task('stackedit', ['submodule:stackedit', 'stackedit:npm:install', 'stackedit:bower:install', 'stackedit:custom', 'stackedit:build']);
 
 //===========================================
 // Chrome App
@@ -66,7 +76,7 @@ gulp.task('stackedit:build', ()=>{
 //-------------------------------------------
 // clean generate app
 gulp.task('chromapp:clean', ()=>{
-    del(path.join(CONFIG.dist, CONFIG.appName));
+    del(path.join(CONFIG.dist));
 });
 
 //-------------------------------------------
@@ -84,8 +94,23 @@ gulp.task('chromeapp:copy:src', ()=>{
 });
 
 //-------------------------------------------
+// copy MathJax
+gulp.task('chromeapp:copy:mathjax', ()=>{
+  gulp.src(['**/*'], {cwd:CONFIG.stackEditSrc+"/public/res/bower-libs/MathJax"})
+    .pipe(gulp.dest(path.join(CONFIG.dist, CONFIG.appName, 'stackedit-min', 'bower-libs', 'MathJax')));
+});
+
+
+//-------------------------------------------
+// copy stackedit
+gulp.task('chromeapp:copy:stackedit', ()=>{
+    gulp.src("**/*", {cwd: path.join(CONFIG.stackEditSrc, 'public/res-min')})
+        .pipe(gulp.dest(path.join(CONFIG.dist, CONFIG.appName, 'stackedit-min')));
+});
+
+//-------------------------------------------
 // chrome app task
-gulp.task('chromeapp', ['chromapp:clean', 'chromeapp:copy:chrome-app-src', 'chromeapp:copy:src']);
+gulp.task('chromeapp', ['chromapp:clean', 'stackedit', 'chromeapp:copy:chrome-app-src', 'chromeapp:copy:src', 'chromeapp:copy:stackedit', 'chromeapp:copy:mathjax']);
 
 //===========================================
 //-------------------------------------------
